@@ -3,17 +3,18 @@ document.addEventListener('DOMContentLoaded', startGame)
 // Define your `board` object here!
 var board = {
   cells: [
-    {row:0, col:0, isMine: true, hidden: true},
+    {row:0, col:0, isMine: false, hidden: true},
     {row:0, col:1, isMine: false, hidden: true},
     {row:0, col:2, isMine: true, hidden: true},   
-    {row:1, col:0, isMine: true, hidden: true},
+    {row:1, col:0, isMine: false, hidden: true},
     {row:1, col:1, isMine: false, hidden: true},
-    {row:1, col:2, isMine: false, hidden: true},
+    {row:1, col:2, isMine: true, hidden: true},
     {row:2, col:0, isMine: true, hidden: true},
     {row:2, col:1, isMine: false, hidden: true},
-    {row:2, col:2, isMine: true, hidden: true},       
+    {row:2, col:2, isMine: false, hidden: true},       
   ]
 }
+
 
 /*let cellsObj = board["cells"]; --- referres to each object element of the array
 for(let i = 0, len=cellsObj.length; i<len; i++) console.log(cellObj[1]) will return the array objects or elements
@@ -30,7 +31,9 @@ function startGame () {
   for(var i=0; i<cell.length; i++){
      cell[i].surroundingMines = countSurroundingMines(cell[i]);
   }
-  
+//   addEventListener() sets up a function that will be called whenever the specified event is delivered  
+  document.addEventListener("left-click", checkForWin);
+  document.addEventListener("contextmenu", checkForWin);
   // Don't remove this function call: it makes the game work!
   lib.initBoard()
 }
@@ -38,29 +41,28 @@ function startGame () {
 
 
 // Define this function to look for a win condition:
-//function checkForWin () {
-  // Here, loop through 
-//   var remaining = board.cells
-//     .filter(function (cell) {
-//       return cell.hidden && !cell.isMarked
-//     })
-//   if (remaining.length > 0) {
-//     return
-//   }
-//   var incorrect = board.cells
-//     .filter(function (cell) {
-//       return cell.isMarked && !cell.isMine
-//     })
-//   if (incorrect.length > 0) {
-//     return
-//   }
+// check for hidden, isMarked and isMine
 // 1. Are all of the cells that are NOT mines visible?
 // 2. Are all of the mines marked?
 function checkForWin () {
-
+//   create new array of cells still left unopened
+var cellsLeft=cell.filter(function(cell){
+  return cell.isMine && !cell.isMarked    // cell is unmarked mine
+})
+// if the length of this new array is more than 0 the game needs to continue ie return or exit function
+if(cellsLeft.length>0){
+  return
+}
+var stillHidden = cell.filter(function(cell){
+  return cell.hidden && !cell.isMarked  // cells still hidden and not marked  
+})
+// is the length of array is more than 0 game hasn't finished, return or exit function
+if(stillHidden >0){
+  return
+}
   // You can use this function call to declare a winner (once you've
   // detected that they've won, that is!)
-  //   lib.displayMessage('You win!')
+    lib.displayMessage('You win!')
 }
 
 // Define this function to count the number of mines around the cell
@@ -78,13 +80,13 @@ function countSurroundingMines (cell) {
   var surrounding = lib.getSurroundingCells(cell['row'], cell['col']);
   return surrounding.map(function(nextCell){
     return nextCell.isMine
-  }) .length
+  }) .length;
 }
  
 //  function countSurroundingMines (cell) {
-//   var surrounding = lib.getSurroundingCells(cell.row, cell.col)
-//   return surrounding.filter(function (adjacentCell) {
-//     return adjacentCell.isMine
+//   var surrounding = lib.getSurroundingCells(cel['row'], cell['col'])
+//   return surrounding.filter(function (nextCell) {
+//     return nextCell.isMine
 //   }).length;
 // }   
 
