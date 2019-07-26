@@ -29,6 +29,7 @@ function startGame () {
   // write a loop to loop through board.cells to call countSurroundingMines
   // for each cell in board.cells 
   for(var i=0; i<cell.length; i++){
+
      cell[i].surroundingMines = countSurroundingMines(cell[i]);
   }
 //   addEventListener() sets up a function that will be called whenever the specified event is delivered  
@@ -78,9 +79,13 @@ if(stillHidden >0){
 //  map() method creates a new array with the results of calling a provided function on every element
 function countSurroundingMines (cell) {
   var surrounding = lib.getSurroundingCells(cell['row'], cell['col']);
-  return surrounding.map(function(nextCell){
-    return nextCell.isMine
-  }) .length;
+  var mined = 0;
+  for(var i=0; i<surrounding.length; i++){
+    if(surrounding[i].isMine){
+      mined++
+    }
+  }
+  return mined; 
 }
  
 //  function countSurroundingMines (cell) {
